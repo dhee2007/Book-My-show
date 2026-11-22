@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookMyShow Food & Drinks</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">b</span><span>bookmyshow <b>food & drinks</b></span></div>
+    <div class="header-actions">
+      <span id="locationLabel">📍 Bengaluru</span>
+      <button class="outline-btn" id="loginBtn">Login / Sign up</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">GOOD FOOD. GREAT EXPERIENCES.</p>
+        <h1>Make your outing<br><span>more delicious.</span></h1>
+        <p class="hero-copy">Discover restaurants, reserve a table, or order your favourites.</p>
+        <div class="hero-actions">
+          <button class="primary-btn" onclick="scrollToSection('restaurants')">Explore restaurants</button>
+          <button class="light-btn" onclick="showPage('history')">My orders</button>
+        </div>
+      </div>
+      <div class="hero-art" aria-label="Food illustration">
+        <div class="plate"><div class="food">🍕</div></div>
+        <div class="float-food one">🍔</div><div class="float-food two">🥤</div><div class="float-food three">🍟</div>
+      </div>
+    </section>
+
+    <nav class="tabs">
+      <button class="tab active" data-page="home" onclick="showPage('home')">Explore</button>
+      <button class="tab" data-page="history" onclick="showPage('history')">Orders & bookings</button>
+      <button class="tab" data-page="manager" onclick="showPage('manager')">Restaurant manager</button>
+    </nav>
+
+    <section id="homePage">
+      <section class="section-head" id="restaurants">
+        <div><p class="eyebrow">FIND YOUR NEXT FAVOURITE</p><h2>Restaurants near you</h2></div>
+        <input id="searchInput" class="search" placeholder="Search restaurants or food..." />
+      </section>
+      <div class="filters">
+        <select id="cuisineFilter"><option value="">All cuisines</option><option>Indian</option><option>Italian</option><option>Chinese</option><option>Fast Food</option></select>
+        <select id="sortFilter"><option value="">Sort by</option><option value="rating">Top rated</option><option value="price">Price: low to high</option></select>
+        <button class="chip active" data-kind="All">All</button>
+        <button class="chip" data-kind="Veg">Veg</button>
+        <button class="chip" data-kind="Non-Veg">Non-Veg</button>
+        <button class="chip" data-kind="Offers">Offers</button>
+      </div>
+      <div id="restaurantGrid" class="restaurant-grid"></div>
+      <section class="offer-banner"><div><p class="eyebrow">SPECIAL OFFER</p><h2>Use FOOD10 and get 10% off</h2><p>Apply the code at checkout. Demo offer for this project.</p></div><span>10% OFF</span></section>
+    </section>
+
+    <section id="historyPage" class="hidden page-panel">
+      <div class="section-head"><div><p class="eyebrow">YOUR ACTIVITY</p><h2>Orders & bookings</h2></div></div>
+      <div id="historyList"></div>
+    </section>
+
+    <section id="managerPage" class="hidden page-panel">
+      <div class="section-head"><div><p class="eyebrow">RESTAURANT PORTAL</p><h2>Manager dashboard</h2></div><span class="demo-tag">DEMO VIEW</span></div>
+      <div class="manager-grid">
+        <div class="manager-card"><h3>Manage menu & offers</h3><p>Review menu availability and promotional offers.</p><button class="outline-btn" onclick="toast('Menu management demo opened')">Manage menu</button></div>
+        <div class="manager-card"><h3>Orders & reservations</h3><p>View incoming orders and table booking requests.</p><button class="outline-btn" onclick="renderManager()">Refresh activity</button></div>
+      </div>
+      <div id="managerActivity"></div>
+    </section>
+  </main>
+
+  <footer><span>BookMyShow Food & Drinks – Academic Project Prototype</span><span>© 2026</span></footer>
+
+  <div id="restaurantModal" class="modal hidden"><div class="modal-card"><button class="close" onclick="closeModal()">×</button><div id="restaurantDetails"></div></div></div>
+  <div id="cartDrawer" class="drawer hidden"><div class="drawer-head"><h2>Your cart</h2><button class="close" onclick="toggleCart(false)">×</button></div><div id="cartItems"></div><div id="cartSummary"></div></div>
+  <button class="cart-fab" onclick="toggleCart(true)">🛒 <span id="cartCount">0</span></button>
+
+  <div id="loginModal" class="modal hidden"><div class="modal-card small-modal"><button class="close" onclick="closeLogin()">×</button><p class="eyebrow">WELCOME</p><h2>Login / Sign up</h2><p class="muted">Enter your mobile number or email to continue.</p><input id="loginIdentity" class="full-input" placeholder="Mobile number or email"><button class="primary-btn full" onclick="sendOtp()">Continue</button><div id="otpArea" class="hidden"><p class="muted">Demo OTP: <b>1234</b></p><input id="otpInput" class="full-input" placeholder="Enter OTP"><button class="primary-btn full" onclick="verifyOtp()">Verify OTP</button></div><p id="loginMessage" class="message"></p></div></div>
+
+  <div id="checkoutModal" class="modal hidden"><div class="modal-card small-modal"><button class="close" onclick="closeCheckout()">×</button><p class="eyebrow">CHECKOUT</p><h2>Complete your order</h2><label>Service type</label><select id="serviceType" class="full-input" onchange="serviceChanged()"><option>Takeaway</option><option>Delivery</option></select><div id="addressWrap" class="hidden"><label>Delivery address</label><input id="deliveryAddress" class="full-input" placeholder="Enter delivery address"></div><label>Offer code</label><input id="offerCode" class="full-input" placeholder="FOOD10"><div class="checkout-total" id="checkoutTotal"></div><button class="primary-btn full" onclick="payNow()">Make payment (demo)</button><p class="muted tiny">This prototype simulates payment. No real money is charged.</p></div></div>
+
+  <div id="reservationModal" class="modal hidden"><div class="modal-card small-modal"><button class="close" onclick="closeReservation()">×</button><p class="eyebrow">DINE-IN</p><h2>Reserve a table</h2><label>Date</label><input type="date" id="bookingDate" class="full-input"><label>Time</label><input type="time" id="bookingTime" class="full-input" value="19:00"><label>Number of people</label><input type="number" id="guests" class="full-input" min="1" max="20" value="2"><button class="primary-btn full" onclick="confirmReservation()">Check availability & reserve</button></div></div>
+  <div id="toast" class="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
